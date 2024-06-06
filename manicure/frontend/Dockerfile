@@ -3,10 +3,11 @@ FROM node:14
 
 WORKDIR /app
 
-COPY package*.json ./
+# Обновление npm до последней версии
+RUN npm install -g npm@latest
 
-# Использование npm ci для установки зависимостей
-RUN npm ci
+COPY package*.json ./
+RUN npm install
 
 COPY . .
 
