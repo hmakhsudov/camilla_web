@@ -3,8 +3,8 @@ FROM node:14
 
 WORKDIR /app
 
-# Установка конкретной версии npm
-RUN npm install -g npm@6
+# Обновление npm до последней версии
+RUN npm install -g npm@latest
 
 COPY package*.json ./
 RUN npm install
