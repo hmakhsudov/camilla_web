@@ -3,7 +3,8 @@
     <div class="container">
       <nav>
         <div class="nav__logo">
-          NailConnect
+          <div class="nav__logo-text">NailConnect</div>
+          <img src="/img/logo.jpg" alt="Logo">
         </div>
         <div class="burger" @click="toggleMenu">
           &#9776;
@@ -55,6 +56,7 @@ nav {
   padding-top: 30px;
   padding-bottom: 30px;
   position: relative;
+  align-items: center;
 }
 
 .burger {
@@ -83,8 +85,17 @@ nav {
 .nav__logo {
   font-weight: 700;
   font-size: 24px;
+  display: flex;
+  align-items: center;
+}
+.nav__logo-text{
+  margin-right: 15px;
 }
 
+.nav__logo img{
+  width: 30px;
+  height: 30px;
+}
 .nav__login {
   color: #23A6F0;
   font-weight: 700;

@@ -1,5 +1,7 @@
 <script setup lang="js">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth'
 
 const slides = [
   {
@@ -19,57 +21,64 @@ const slides = [
   }
 ];
 
-let currentSlide = ref(0);
+const currentSlide = ref(0);
+const router = useRouter();
 
 const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % slides.length;
 };
 
 // Интервал для автоматического переключения слайдов
-const intervalId = setInterval(nextSlide, 7000);
+let intervalId;
 
-// Запустить автоматическое переключение при монтировании компонента
+const { isAuth, logout, userProfile, fetchUserProfile } = useAuth()
+
+const profileLink = computed(() => {
+  if (userProfile.value) {
+    return userProfile.value.is_master ? '/profile_master' : '/profile_client'
+  }
+  return '/profile'
+})
+
 onMounted(() => {
-  intervalId;
+  fetchUserProfile()
+  intervalId = setInterval(nextSlide, 7000);
 });
 
-// Остановить автоматическое переключение при уничтожении компонента
 onUnmounted(() => {
   clearInterval(intervalId);
 });
 </script>
 
 <template>
-    <section class="banner__slider">
-      <div class="banner__slide" v-for="(slide, index) in slides" :key="index" :class="{ active: index === currentSlide }">
-        <img :src="slide.image" :alt="'Slide ' + (index + 1)">
-        <div class="banner__container">
-          <div class="banner__slide-content">
-            <h1>{{ slide.title }}</h1>
-            <h3>{{ slide.subtitle }}</h3>
-          </div>
+  <section class="banner__slider">
+    <div class="banner__slide" v-for="(slide, index) in slides" :key="index" :class="{ active: index === currentSlide }">
+      <img :src="slide.image" :alt="'Slide ' + (index + 1)">
+      <div class="banner__container">
+        <div class="banner__slide-content">
+          <h1>{{ slide.title }}</h1>
+          <h3>{{ slide.subtitle }}</h3>
         </div>
       </div>
-    </section>
-    <section class="whosec">
-    <div class="container">
-        <div class="who__wrapper">
-            <div class="who who__client">
-                <h3>Для клиентов</h3>
-                <h2>Время <br>ноготочек</h2>
-                <a href="">Перейти в кабинет</a>
-            </div>
-            <div class="who who__master">
-                <h3>Для мастеров маникюра</h3>
-                <h2>Больше <br>возможностей</h2>
-                <a href="#">Перейти в кабинет</a>
-            </div>
-        </div>
     </div>
-</section>
+  </section>
+  <section class="whosec">
+    <div class="container">
+      <div class="who__wrapper">
+        <div class="who who__client">
+          <h3>Для клиентов</h3>
+          <h2>Время <br>ноготочек</h2>
+          <router-link :to="profileLink">Перейти в кабинет</router-link>
+        </div>
+        <div class="who who__master">
+          <h3>Для мастеров маникюра</h3>
+          <h2>Больше <br>возможностей</h2>
+          <router-link :to="profileLink">Перейти в кабинет</router-link>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
-
-
 
 <style scoped>
 .banner__slider{
